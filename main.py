@@ -6,6 +6,15 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # ← autorise toutes les origines
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # Récupération sécurisée de la clé API OpenAI
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
