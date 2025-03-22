@@ -1,36 +1,29 @@
 from fastapi import FastAPI
-import openai
-import os
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import openai
+import os
 
 app = FastAPI()
 
-from fastapi.middleware.cors import CORSMiddleware
-
+# Middleware CORS : autorise l'accès depuis StackBlitz
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # ← autorise toutes les origines
+    allow_origins=["*"],  # ← autorise toutes les origines (dont StackBlitz)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# Récupération sécurisée de la clé API OpenAI
+
+# Clé API sécurisée
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 class Prompt(BaseModel):
     user_prompt: str
 
 @app.post("/generate")
 async def generate_saas(prompt: Prompt):
+    print("Prompt reçu :", prompt.user_prompt)  # pour débug
     response = openai.ChatCompletion.create(
         model="gpt-4",
         messages=[
